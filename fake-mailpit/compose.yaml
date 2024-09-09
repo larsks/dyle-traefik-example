@@ -1,0 +1,20 @@
+services:
+  mailpit:
+    image: docker.io/traefik/whoami:latest
+    hostname: mailpit
+    restart: unless-stopped
+    ports:
+      - 8025:8025
+    environment:
+      WHOAMI_PORT_NUMBER: "8025"
+    labels:
+      - "traefik.http.routers.mailpit.rule=Host(`localhost`) && PathPrefix(`/mailpit`)"
+      - "traefik.http.routers.mailpit.tls=true"
+      - "traefik.http.routers.mailpit.service=mailpit"
+      - "traefik.http.services.mailpit.loadbalancer.server.port=8025"
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true
